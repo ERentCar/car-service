@@ -62,4 +62,12 @@ public class Car implements Serializable {
     @JsonIgnore
     private Brand brand;
 
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @OneToMany(
+            targetEntity = Favorite.class,
+            mappedBy = "car",
+            fetch = FetchType.LAZY,
+            orphanRemoval = true
+    )
+    private Set<Favorite> favorites;
 }

@@ -26,20 +26,27 @@ public class CarController {
     public List<CarResource> getAllCars(){
         return mapper.listToResource(carService.getAll());
     }
-    /*@GetMapping("notRents")
+
+    @GetMapping("notRents")
     public Page<CarResource> getAllCarsNotRent(Pageable pageable){
         return mapper.modelListToPage(carService.getCarsNotRent(),pageable);
-    }*/
+    }
+
+    @GetMapping("owner/{ownerId}")
+    public Page<CarResource> getCarsByOwner(Pageable pageable,@PathVariable Long ownerId){
+        return mapper.modelListToPage(carService.getCarsByOwner(ownerId),pageable);
+    }
 
     @GetMapping("{carId}")
     public CarResource getCarById(@PathVariable Long carId){
         return  mapper.toResource(carService.getById(carId));
     }
 
-    @PostMapping("brand/{brandId}")
-    public CarResource createCar(@PathVariable("brandId")Long brandId,
+    @PostMapping("owner/{ownerId}/brand/{brandId}")
+    public CarResource createCar(@PathVariable("ownerId")Long ownerId,
+                                 @PathVariable("brandId")Long brandId,
                                  @Valid @RequestBody CreateCarResource request){
-        return mapper.toResource(carService.create(brandId,mapper.toModel(request)));
+        return mapper.toResource(carService.create(ownerId,brandId,mapper.toModel(request)));
     }
     @DeleteMapping("{carId}")
     public ResponseEntity<?> deleteCar(@PathVariable Long carId) {

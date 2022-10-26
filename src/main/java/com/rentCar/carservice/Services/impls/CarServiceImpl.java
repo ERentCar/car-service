@@ -37,9 +37,18 @@ public class CarServiceImpl implements CarService {
         return carRepository.findById(carId)
                 .orElseThrow(()->new ResourceNotFoundException("CAR",carId));
     }
+    @Override
+    public List<Car> getCarsNotRent(){
+        return carRepository.findCarsNotRents();
+    }
 
     @Override
-    public Car create(Long brandId,Car car) {
+    public List<Car> getCarsByOwner(Long ownerId) {
+        return carRepository.findCarsByOwner(ownerId);
+    }
+
+    @Override
+    public Car create(Long ownerId,Long brandId,Car car) {
         Set<ConstraintViolation<Car>> violations=validator.validate(car);
         if(!violations.isEmpty()){
             throw new ResourceValidationException("CAR",violations);
@@ -49,6 +58,7 @@ public class CarServiceImpl implements CarService {
 
         car.setBrand(brand);
         car.setRating(0.0);
+        car.setOwnerId(ownerId);
         return carRepository.save(car);
     }
 

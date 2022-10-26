@@ -11,8 +11,10 @@ public interface CarService {
     List<Car> getAll();
     /*Page<Car> getAll(Pageable pageable);*/
     Car getById(Long carId);
-    Car create(Long brandId,Car car);
+    Car create(Long ownerId,Long brandId,Car car);
     ResponseEntity<?> delete(Long carId);
     /*List<Car> getCarsNotRent();*/
     Car setState(Long carId);
+    List<Car>getCarsNotRent();
+    List<Car>getCarsByOwner(Long ownerId);
 }

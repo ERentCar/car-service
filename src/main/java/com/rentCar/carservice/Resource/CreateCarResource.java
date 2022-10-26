@@ -34,5 +34,4 @@ public class CreateCarResource {
 
     private Integer state;
 
-    private Long ownerId;
 }
