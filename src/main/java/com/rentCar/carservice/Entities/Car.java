@@ -2,6 +2,8 @@ package com.rentCar.carservice.Entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.rentCar.carservice.Resource.OwnerCarResource;
 import lombok.*;
 
 import javax.persistence.*;
@@ -70,4 +72,7 @@ public class Car implements Serializable {
             orphanRemoval = true
     )
     private Set<Favorite> favorites;
+    @JsonIgnore
+    @Transient
+    private OwnerCarResource ownerCarResource;
 }

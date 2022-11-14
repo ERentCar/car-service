@@ -19,11 +19,14 @@ import java.util.Set;
 public class CarServiceImpl implements CarService {
     private final CarRepository carRepository;
     private final BrandRepository brandRepository;
+    private final ApiCall apiCall;
     private final Validator validator;
 
-    public CarServiceImpl(CarRepository carRepository, BrandRepository brandRepository, Validator validator) {
+    public CarServiceImpl(CarRepository carRepository, BrandRepository brandRepository,
+                          ApiCall apiCall, Validator validator) {
         this.carRepository = carRepository;
         this.brandRepository = brandRepository;
+        this.apiCall = apiCall;
         this.validator = validator;
     }
 
@@ -33,9 +36,16 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
+    public List<Car> getAllForRents() {
+        return carRepository.findAll();
+    }
+
+    @Override
     public Car getById(Long carId) {
-        return carRepository.findById(carId)
+        Car car=carRepository.findById(carId)
                 .orElseThrow(()->new ResourceNotFoundException("CAR",carId));
+        car.setOwnerCarResource(apiCall.getOwner(car.getOwnerId()));
+        return car;
     }
     @Override
     public List<Car> getCarsNotRent(){
@@ -45,6 +55,15 @@ public class CarServiceImpl implements CarService {
     @Override
     public List<Car> getCarsByOwner(Long ownerId) {
         return carRepository.findCarsByOwner(ownerId);
+    }
+
+    @Override
+    public Car setRating(Long carId,Double rating) {
+
+        Car car=carRepository.findById(carId).map(aux->carRepository.save(aux.withRating(rating)))
+                .orElseThrow(()->new ResourceNotFoundException("CAR",carId));
+        car.setRating(rating);
+        return car;
     }
 
     @Override
@@ -71,11 +90,11 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public Car setState(Long carId) {
+    public Car setState(Long carId,int state) {
         Car car=carRepository.findById(carId)
                 .orElseThrow(()->new ResourceNotFoundException("CAR",carId));
-        carRepository.save(car.withState(1));
-        car.setState(1);
+        carRepository.save(car.withState(state));
+        car.setState(state);
         return car;
     }
 }

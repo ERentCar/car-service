@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CarResource {
+public class CarRentResource {
     private Long id;
 
     private String model;
@@ -23,12 +23,4 @@ public class CarResource {
     private String description;
 
     private int state;
-
-    private Double rating;
-
-    private Long ownerId;
-
-    private BrandResource brand;
-
-    private OwnerCarResource ownerCarResource;
 }
