@@ -1,6 +1,7 @@
 package com.rentCar.carservice.Controllers;
 
 import com.rentCar.carservice.Mapping.CarMapper;
+import com.rentCar.carservice.Resource.CarNoRentsResource;
 import com.rentCar.carservice.Resource.CarRentResource;
 import com.rentCar.carservice.Resource.CarResource;
 import com.rentCar.carservice.Resource.CreateCarResource;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/v1/cars")
 public class CarController {
@@ -32,9 +34,13 @@ public class CarController {
         return mapper.listToResourceForRents(carService.getAllForRents());
     }
 
-    @GetMapping("notRents")
+    /*@GetMapping("notRents/{clientId}")
     public Page<CarResource> getAllCarsNotRent(Pageable pageable){
         return mapper.modelListToPage(carService.getCarsNotRent(),pageable);
+    }*/
+    @GetMapping("notRents/{clientId}")
+    public Page<CarNoRentsResource> getAllCarsNotRent(@PathVariable("clientId")Long clientId,Pageable pageable){
+        return mapper.noRentListToPage(carService.getCarsNotRent(clientId),pageable) ;
     }
 
     @GetMapping("owner/{ownerId}")

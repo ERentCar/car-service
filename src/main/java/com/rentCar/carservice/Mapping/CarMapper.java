@@ -1,6 +1,7 @@
 package com.rentCar.carservice.Mapping;
 
 import com.rentCar.carservice.Entities.Car;
+import com.rentCar.carservice.Resource.CarNoRentsResource;
 import com.rentCar.carservice.Resource.CarRentResource;
 import com.rentCar.carservice.Resource.CarResource;
 import com.rentCar.carservice.Resource.CreateCarResource;
@@ -28,5 +29,12 @@ public class CarMapper implements Serializable {
     }
     public List<CarRentResource> listToResourceForRents(List<Car> modelList){
         return mapper.mapList(modelList,CarRentResource.class);
+    }
+    //For Favorites
+    public List<CarRentResource> listToRentResource(List<Car> modelList){
+        return mapper.mapList(modelList,CarRentResource.class);
+    }
+    public Page<CarNoRentsResource> noRentListToPage(List<CarNoRentsResource> modelList, Pageable pageable){
+        return new PageImpl<>(mapper.mapList(modelList,CarNoRentsResource.class),pageable,modelList.size());
     }
 }

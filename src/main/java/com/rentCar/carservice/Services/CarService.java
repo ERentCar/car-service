@@ -1,6 +1,7 @@
 package com.rentCar.carservice.Services;
 
 import com.rentCar.carservice.Entities.Car;
+import com.rentCar.carservice.Resource.CarNoRentsResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,7 @@ public interface CarService {
     ResponseEntity<?> delete(Long carId);
     /*List<Car> getCarsNotRent();*/
     Car setState(Long carId,int state);
-    List<Car>getCarsNotRent();
+    List<CarNoRentsResource>getCarsNotRent(Long clientId);
     List<Car>getCarsByOwner(Long ownerId);
     Car setRating(Long carId,Double rating);
 }

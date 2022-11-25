@@ -2,8 +2,14 @@ package com.rentCar.carservice.Services.impls;
 
 import com.rentCar.carservice.Entities.Brand;
 import com.rentCar.carservice.Entities.Car;
+import com.rentCar.carservice.Entities.Favorite;
+import com.rentCar.carservice.Mapping.CarMapper;
 import com.rentCar.carservice.Repositories.BrandRepository;
 import com.rentCar.carservice.Repositories.CarRepository;
+import com.rentCar.carservice.Repositories.FavoriteRepository;
+import com.rentCar.carservice.Resource.CarNoRentsResource;
+import com.rentCar.carservice.Resource.CarRentResource;
+import com.rentCar.carservice.Resource.CarResource;
 import com.rentCar.carservice.Services.CarService;
 import com.rentCar.carservice.Shared.Exception.ResourceNotFoundException;
 import com.rentCar.carservice.Shared.Exception.ResourceValidationException;
@@ -12,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -19,15 +26,19 @@ import java.util.Set;
 public class CarServiceImpl implements CarService {
     private final CarRepository carRepository;
     private final BrandRepository brandRepository;
+    private final FavoriteRepository favoriteRepository;
     private final ApiCall apiCall;
     private final Validator validator;
+    private final CarMapper mapper;
 
     public CarServiceImpl(CarRepository carRepository, BrandRepository brandRepository,
-                          ApiCall apiCall, Validator validator) {
+                          FavoriteRepository favoriteRepository, ApiCall apiCall, Validator validator, CarMapper mapper) {
         this.carRepository = carRepository;
         this.brandRepository = brandRepository;
+        this.favoriteRepository = favoriteRepository;
         this.apiCall = apiCall;
         this.validator = validator;
+        this.mapper = mapper;
     }
 
     @Override
@@ -48,8 +59,36 @@ public class CarServiceImpl implements CarService {
         return car;
     }
     @Override
-    public List<Car> getCarsNotRent(){
-        return carRepository.findCarsNotRents();
+    public List<CarNoRentsResource> getCarsNotRent(Long clientId){
+        List<CarNoRentsResource>list=new ArrayList<CarNoRentsResource>();
+        List<Car> carsNotRent=carRepository.findCarsNotRents();
+        List<Favorite> favoriteResources=favoriteRepository.getCarsFavoritesClientId(clientId);
+        List<CarResource> carRentResourceList=mapper.listToResource(carsNotRent);
+        if(favoriteResources.size()>0){
+            for (CarResource car:carRentResourceList){
+                CarNoRentsResource aux = null;
+                for(Favorite favorite:favoriteResources){
+                    if(car.getId()==favorite.getCar().getId()){
+                        aux=new CarNoRentsResource(car,true,favorite.getId());
+                        break;
+                    }
+                    else{
+                        aux=new CarNoRentsResource(car,false,0L);
+                    }
+                    
+                }
+                list.add(aux);
+            }
+            return list;
+        } else{
+            for (CarResource car:carRentResourceList) {
+                CarNoRentsResource aux;
+                aux=new CarNoRentsResource(car,false,0L);
+                list.add(aux);
+            }
+        }
+        return list;
+
     }
 
     @Override

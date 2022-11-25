@@ -12,8 +12,12 @@ import org.springframework.web.client.RestTemplate;
 public class ApiCall {
     @Autowired
     RestTemplate restTemplate;
-    public OwnerCarResource getOwner(Long ownerId)throws RestClientException {
+    /*public OwnerCarResource getOwner(Long ownerId)throws RestClientException {
         return restTemplate.getForObject("http://localhost:8105/api/v1/owners/ownerCar/"+ownerId,
+                OwnerCarResource.class);
+    }*/
+    public OwnerCarResource getOwner(Long ownerId)throws RestClientException {
+        return restTemplate.getForObject("https://users-erentcar.azurewebsites.net/api/v1/owners/ownerCar/"+ownerId,
                 OwnerCarResource.class);
     }
 }
